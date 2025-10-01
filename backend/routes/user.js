@@ -119,6 +119,30 @@ router.put("/", authMiddleware , async(req , res) => {
 })
 
 
+router.get("/me", authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).select('firstName lastName username');
+        
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        res.json({
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                username: user.username
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetching user data"
+        });
+    }
+});
+
 
 
 router.get("/bulk", async (req, res) => {
